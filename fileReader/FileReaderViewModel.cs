@@ -1,5 +1,7 @@
 ﻿using MVVM;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -10,9 +12,6 @@ namespace fileReader
         private bool _isLoaded = false;
         private bool _isInstantiated = false;
         private Model _model = null;
-
-        private int _var = 300;
-        private string _filepath = "";
 
         public void Initialize()
         {
@@ -39,41 +38,55 @@ namespace fileReader
                 // TODO: Add your loaded code here 
             }
         }
-        // ---------------------------------------------- sample properties 
-        public int MyProperty
+
+        public int FileProcessingProgress
         {
-            get { return _var; }
-            set { SetProperty(ref _var, value); }
-        }
-
-        private CommandAction _cmdClick;
-
-        public ICommand Click => _cmdClick ?? (_cmdClick = new CommandAction(OnClick, OnClickEvaluator));
-
-        private void OnClick(object obj)
-        {
-            //MessageBox.Show(obj as string);
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".txt";
-            Nullable<bool> result = dlg.ShowDialog();
-            if (result == true)
-            {
-                // Open document 
-                string filename = dlg.FileName;
-                FilePath = filename;
-            }
-        }
-
-        private bool OnClickEvaluator(object obj)
-        {
-            return (obj as string)?.Length > 0;
+            get { return _model.progress; }
+            set { SetProperty(ref _model.progress, value); }
         }
 
         public string FilePath
         {
-            get { return _filepath; }
-            set { SetProperty(ref _filepath, value); }
+            get { return _model.filepath; }
+            set { SetProperty(ref _model.filepath, value); }
         }
 
+        private CommandAction _cmdOpenDialog;
+        private CommandAction _cmdStart;
+
+        public ICommand OpenDialog => _cmdOpenDialog ?? (_cmdOpenDialog = new CommandAction(GetFilePathFromDialog));
+        public ICommand Start => _cmdStart ?? (_cmdStart = new CommandAction(StartLongTask));
+
+        public async void StartLongTask(object obj)
+        {
+            Task task = Task.Run(() => {
+                FileProcessingProgress = 10;
+                Thread.Sleep(1000);
+                FileProcessingProgress = 30;
+                Thread.Sleep(1000);
+                FileProcessingProgress = 50;
+                Thread.Sleep(1000);
+                FileProcessingProgress = 70;
+                Thread.Sleep(1000);
+                FileProcessingProgress = 85;
+                Thread.Sleep(1000);
+                FileProcessingProgress = 100;
+                MessageBox.Show("Task finished its execution");
+                }
+                //ExecuteLongProcedure(this, intParam1, intParam2, intParam3)
+        );
+            await task;
+        }
+
+
+        public void GetFilePathFromDialog(object obj)
+        {
+            //MessageBox.Show(obj as string);
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = ".txt";
+            dlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            Nullable<bool> result = dlg.ShowDialog();
+            FilePath = result == true ? dlg.FileName : "";
+        }
     }
 }

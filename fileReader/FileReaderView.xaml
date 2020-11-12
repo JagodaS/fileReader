@@ -18,36 +18,59 @@
         <Grid.DataContext>
             <Binding Source="{StaticResource ViewModel}"/>
         </Grid.DataContext>
-        <Label 
-            Name="HelloWorldLabel"
-            Content="HELLO WORLD"
-            HorizontalAlignment="Left"
-            Margin="203,226,0,0"
-            VerticalAlignment="Top"
-            FontSize="50"
-            Width="{Binding Source={StaticResource ViewModel}, Path=MyProperty, Mode=OneWay}"
-        />
-        <Label 
-            Name="FilePath"
-            Content="{Binding Source={StaticResource ViewModel}, Path=FilePath, Mode=OneWay}"
-            HorizontalAlignment="Left"
-            Margin="203,144,0,0"
-            VerticalAlignment="Top"
-            FontSize="15"
-            />
-        <Label 
-            Name ="TestLabel"
-            Content="Click me to open file" Height="100"
-            VerticalAlignment="Bottom" Margin="346,0,289,0">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseUp">
-                    <i:InvokeCommandAction
-                    Command="{Binding Click, Source={StaticResource ViewModel}}"
-                    CommandParameter="{Binding ElementName=TestLabel, Path=Content}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Label>
+
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem 
+                        Header="_Open">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction
+                                Command="{Binding OpenDialog, Source={StaticResource ViewModel}}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+            </Menu>
+
+            <StatusBar DockPanel.Dock="Bottom" Height="25">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <Separator Grid.Column="1" />
+                <StatusBarItem Grid.Column="0">
+                    <TextBlock Text="{Binding Source={StaticResource ViewModel}, Path=FilePath, Mode=OneWay}" />
+                </StatusBarItem>
+                <Separator Grid.Column="2" />
+                <StatusBarItem Grid.Column="3">
+                    <ProgressBar Value="{Binding Source={StaticResource ViewModel}, Path=FileProcessingProgress, Mode=OneWay}"
+                                 Width="100"
+                                 Height="25"/>
+                </StatusBarItem>
+            </StatusBar>
+            <Grid>
+                <Button Name="StartButton"
+                    Content="START" HorizontalAlignment="Left" Margin="247,70,0,0" VerticalAlignment="Top" Width="75">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction
+                                Command="{Binding Start, Source={StaticResource ViewModel}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </DockPanel>
 
     </Grid>
-
 </Window>

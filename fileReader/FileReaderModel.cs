@@ -1,10 +1,14 @@
-﻿namespace fileReader
+﻿using System;
+
+namespace fileReader
 {
     public class Model
     {
-        
         private static bool _isLoaded = false;
         private bool _isInstantiated = false;
+
+        public string filepath = "";
+        public int progress = 0;
 
         /*private static fileReader.FileReader _view;
          * public void Initialize(fileReader.FileReader view)
@@ -26,10 +30,11 @@
         {
             if (!_isLoaded)
             {
-                // Od tego momentu masz dostęp do interfejsu xaml
                 _isLoaded = true;
             }
         }
+
+        
     }
 
 }

@@ -16,7 +16,6 @@ namespace fileReader
             ViewModel.Initialize();
             Loaded += (s, e) => ViewModel.OnLoaded();
             //Unloaded += (s, e) => ViewModel.OnUnloaded();
-
         }
     }
 }
